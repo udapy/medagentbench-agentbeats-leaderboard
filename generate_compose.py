@@ -62,15 +62,52 @@ services:
     image: {green_image}
     platform: linux/amd64
     container_name: green-agent
-    command: ["--host", "0.0.0.0", "--port", "{green_port}", "--card-url", "http://green-agent:{green_port}"]
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        echo "Waiting for FHIR server..."
+        python -c '
+        import time
+        import requests
+        import sys
+        
+        url = "http://fhir-server:8080/fhir/metadata"
+        timeout = 120
+        start = time.time()
+        
+        while time.time() - start < timeout:
+            try:
+                resp = requests.get(url, timeout=5)
+                if resp.status_code == 200:
+                    print("FHIR server is up!")
+                    sys.exit(0)
+            except Exception as e:
+                pass
+            print(f"Waiting for FHIR server... ({{int(time.time() - start)}}s)")
+            time.sleep(5)
+        
+        print("Timeout waiting for FHIR server")
+        sys.exit(1)
+        '
+        
+        exec python -m src.a2a_adapter.server --host 0.0.0.0 --port {green_port} --card-url http://green-agent:{green_port}
     environment:{green_env}
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:{green_port}/.well-known/agent-card.json"]
+      test: ["CMD", "python", "-c", "import requests; import sys; r = requests.get('http://localhost:{green_port}/.well-known/agent-card.json'); sys.exit(0 if r.status_code == 200 else 1)"]
       interval: 5s
       timeout: 3s
-      retries: 10
-      start_period: 30s
+      retries: 20
+      start_period: 60s
     depends_on:{green_depends}
+    networks:
+      - agent-network
+
+  fhir-server:
+    image: ghcr.io/udapy/medagentbench-fhir-server:latest
+    container_name: fhir-server
+    platform: linux/amd64
+    ports:
+      - "8080:8080"
     networks:
       - agent-network
 
@@ -99,11 +136,11 @@ PARTICIPANT_TEMPLATE = """  {name}:
     command: ["--host", "0.0.0.0", "--port", "{port}", "--card-url", "http://{name}:{port}"]
     environment:{env}
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:{port}/.well-known/agent-card.json"]
+      test: ["CMD", "python", "-c", "import requests; import sys; r = requests.get('http://localhost:{port}/.well-known/agent-card.json'); sys.exit(0 if r.status_code == 200 else 1)"]
       interval: 5s
       timeout: 3s
-      retries: 10
-      start_period: 30s
+      retries: 20
+      start_period: 60s
     networks:
       - agent-network
 """
@@ -197,7 +234,7 @@ def generate_docker_compose(scenario: dict[str, Any]) -> str:
         green_image=green["image"],
         green_port=DEFAULT_PORT,
         green_env=format_env_vars(green.get("env", {})),
-        green_depends=format_depends_on(participant_names),
+        green_depends=format_depends_on(participant_names) + "\n      fhir-server:\n        condition: service_started",
         participant_services=participant_services,
         client_depends=format_depends_on(all_services)
     )

@@ -4,3 +4,5 @@ a2a-scenario.toml
 .env
 .env.example
 output/
+.context
+.venv
