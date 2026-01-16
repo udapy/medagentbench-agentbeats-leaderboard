@@ -1,21 +1,30 @@
--- MedAgentBench Leaderboard Query
--- "First Principles" Approach: Segment performance by distinct task types (Task 1 to Task 10)
--- to provide transparency. Missing tasks (not run) are displayed as '-'.
-
 WITH expanded_submissions AS (
     SELECT
         s.agent_id,
         s.submission_id,
-        r.task_id,
-        -- Normalize score (assuming 0-1 range)
-        CAST(r.score AS DOUBLE) as score,
-        -- Extract execution time if available, else default to 0
-        COALESCE(CAST(json_extract_scalar(r.metrics, '$.time_used') AS DOUBLE), 0.0) as time_used,
+        
+        -- Extract Task Details from the nested 'failed_tasks' list
+        CAST(json_extract_scalar(task_data, '$.task_id') AS VARCHAR) as task_id,
+        CAST(json_extract_scalar(task_data, '$.score') AS DOUBLE) as score,
+        
+        -- Calculate time per task from group-level aggregate
+        -- Check for division by zero
+        CASE 
+            WHEN CAST(json_extract_scalar(group_data, '$.total_tasks') AS DOUBLE) > 0 
+            THEN CAST(json_extract_scalar(group_data, '$.time_used') AS DOUBLE) / CAST(json_extract_scalar(group_data, '$.total_tasks') AS DOUBLE)
+            ELSE 0.0 
+        END as time_used,
+
         -- Identify task type based on task_id prefix (e.g., task1_1 -> task1)
-        SPLIT_PART(r.task_id, '_', 1) as task_type
+        SPLIT_PART(CAST(json_extract_scalar(task_data, '$.task_id') AS VARCHAR), '_', 1) as task_type
+
     FROM submissions s
-    -- Flatten the results array from the JSON payload
-    CROSS JOIN UNNEST(CAST(json_extract(s.results, '$.results') AS ARRAY(JSON))) AS t(r)
+    -- 1. Unnest the top-level 'results' array to get task groups
+    CROSS JOIN UNNEST(CAST(json_extract(s.results, '$.results') AS ARRAY(JSON))) AS t1(group_data)
+    -- 2. Unnest the 'failed_tasks' array within each group to get individual tasks
+    -- Note: 'failed_tasks' currently contains ALL tasks (pass & fail)
+    CROSS JOIN UNNEST(CAST(json_extract(group_data, '$.failed_tasks') AS ARRAY(JSON))) AS t2(task_data)
+    
     WHERE s.leaderboard_id = 'medagentbench-leaderboard'
 ),
 agent_performance AS (

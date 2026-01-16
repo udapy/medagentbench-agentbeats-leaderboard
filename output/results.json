@@ -4,7 +4,6 @@
   },
   "results": [
     {
-      "result": {
         "medical_task_type": "patient_search",
         "score": 2.0,
         "pass_rate": 100.0,
@@ -28,6 +27,5 @@
         ],
         "time_used": 76.16341710090637
       }
-    }
   ]
 }
