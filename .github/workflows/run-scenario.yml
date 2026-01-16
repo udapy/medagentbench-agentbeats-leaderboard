@@ -3,10 +3,9 @@ name: Run Scenario
 on:
   push:
     branches:
-      - "main"
+      - main
     paths:
       - "scenario.toml"
-  
 
 jobs:
   run:
