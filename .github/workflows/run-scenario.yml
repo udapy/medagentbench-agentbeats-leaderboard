@@ -3,7 +3,7 @@ name: Run Scenario
 on:
   push:
     paths:
-      - 'scenario.toml'
+      - "scenario.toml"
 
 jobs:
   run:
@@ -20,13 +20,22 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install dependencies
         run: pip install tomli tomli-w pyyaml requests
 
       - name: Generate docker-compose.yml
         run: python generate_compose.py --scenario scenario.toml
+
+      - name: Export required secrets to .env
+        run: |
+          cat > .env <<EOF
+          OPENROUTER_API_KEY=${{ secrets.OPENROUTER_API_KEY }}
+          NEBIUS_API_KEY=${{ secrets.NEBIUS_API_KEY }}
+          OPENROUTER_MODEL_NAME=${{ secrets.OPENROUTER_MODEL_NAME }}
+          NEBIUS_MODEL_NAME=${{ secrets.NEBIUS_MODEL_NAME }}
+          EOF
 
       - name: Pull images
         run: |
@@ -92,11 +101,11 @@ jobs:
       - name: Determine target repository
         id: target
         env:
-            GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
-            PARENT_REPO=$(gh api repos/${{ github.repository }} --jq '.parent.full_name // "${{ github.repository }}"')
-            echo "Target repository: $PARENT_REPO"
-            echo "repo=$PARENT_REPO" >> $GITHUB_OUTPUT
+          PARENT_REPO=$(gh api repos/${{ github.repository }} --jq '.parent.full_name // "${{ github.repository }}"')
+          echo "Target repository: $PARENT_REPO"
+          echo "repo=$PARENT_REPO" >> $GITHUB_OUTPUT
 
       - name: Create submission branch
         run: |
