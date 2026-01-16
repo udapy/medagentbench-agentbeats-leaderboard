@@ -1,0 +1,18 @@
+{
+  "image_digests": {
+    "green-agent": "ghcr.io/udapy/medagentbench-green-agent@sha256:f5b35339156bde6e44d378cbb7cda50523e17ddd2909202bf8d47e9f5236938b",
+    "fhir-server": "ghcr.io/udapy/medagentbench-fhir-server@sha256:c16d4befd935005680526df9b2c8e23530e1681aec9a0d13d326f78fb6c66fac",
+    "purple_agent": "ghcr.io/udapy/medagentbench-purple-agent@sha256:9e402eba556969d9de113a80e74ec180731890be242c01412f65c12fae518a92",
+    "agentbeats-client": "ghcr.io/agentbeats/agentbeats-client@sha256:13dfe3ef4e583a80e7ce2fe3becd0ce3b879841368a7f4fa40b6ebbabeeb014e"
+  },
+  "timestamp": "2026-01-16T06:31:11Z",
+  "github_actions": {
+    "run_url": "https://github.com/udapy/medagentbench-agentbeats-leaderboard/actions/runs/21057835153",
+    "run_logs_url": "https://api.github.com/repos/udapy/medagentbench-agentbeats-leaderboard/actions/runs/21057835153/logs",
+    "ref": "refs/heads/main",
+    "sha": "6cff370f9e25bd1fbf9fe0fc76188b77a2252dc3",
+    "repository_url": "https://github.com/udapy/medagentbench-agentbeats-leaderboard",
+    "workflow_ref": "udapy/medagentbench-agentbeats-leaderboard/.github/workflows/run-scenario.yml@refs/heads/main",
+    "workflow_sha": "6cff370f9e25bd1fbf9fe0fc76188b77a2252dc3"
+  }
+}
