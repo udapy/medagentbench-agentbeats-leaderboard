@@ -115,6 +115,7 @@ services:
   agentbeats-client:
     image: ghcr.io/agentbeats/agentbeats-client:v1.0.0
     platform: linux/amd64
+    user: "0:0"
     container_name: agentbeats-client
     volumes:
       - ./a2a-scenario.toml:/app/scenario.toml
@@ -312,6 +313,20 @@ def main():
 
     env_content = generate_env_file(scenario)
     if env_content:
+        # Check for missing environment variables
+        env_vars = [line.split("=")[0] for line in env_content.splitlines() if line]
+        missing_vars = [var for var in env_vars if var not in os.environ]
+        
+        if missing_vars:
+            print("\n" + "!" * 80)
+            print("WARNING: The following environment variables are missing from your shell:")
+            for var in missing_vars:
+                print(f"  - {var}")
+            print("\nThese are required for the agents to function correctly.")
+            print("Please export them before running 'make run':")
+            print(f"  export {missing_vars[0]}=...")
+            print("!" * 80 + "\n")
+
         with open(ENV_PATH, "w") as f:
             f.write(env_content)
         print(f"Generated {ENV_PATH}")

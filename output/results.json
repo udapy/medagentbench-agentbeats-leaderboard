@@ -1,0 +1,31 @@
+{
+  "participants": {
+    "purple_agent": "019bbe64-089b-7e12-b003-61c1ffb61999"
+  },
+  "results": [
+    {
+        "medical_task_type": "patient_search",
+        "score": 2.0,
+        "pass_rate": 100.0,
+        "total_tasks": 2,
+        "passed_tasks": 2,
+        "failed_tasks": [
+          {
+            "task_id": "task1_4",
+            "task_type": "task1",
+            "task_name": "Patient Search",
+            "feedback": "Correct",
+            "score": 1.0
+          },
+          {
+            "task_id": "task1_28",
+            "task_type": "task1",
+            "task_name": "Patient Search",
+            "feedback": "Correct",
+            "score": 1.0
+          }
+        ],
+        "time_used": 76.16341710090637
+      }
+  ]
+}
