@@ -6,6 +6,10 @@ on:
       - main
     paths:
       - "scenario.toml"
+  pull_request:
+    branches:
+      - '**'
+  workflow_dispatch:
 
 jobs:
   run:
