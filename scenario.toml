@@ -12,5 +12,5 @@ env = { OPENROUTER_API_KEY = "${OPENROUTER_API_KEY}", OPENROUTER_MODEL_NAME = "d
 [config]
 # MedAgentBench Task configuration
 task_ids = [
-    "task1_1", "task1_2", "task1_3", "task1_4", "task1_5", "task1_6", "task1_7", "task1_8"]
+    "task1_1", "task1_2", "task1_3", "task1_4", "task1_5"]
 max_iterations = 10
