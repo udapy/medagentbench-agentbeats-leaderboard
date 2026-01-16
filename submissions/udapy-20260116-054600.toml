@@ -1,0 +1,16 @@
+[green_agent]
+agentbeats_id = "019bbb38-e885-7000-8bd2-68e312757711"
+#image = "ghcr.io/udapy/medagentbench-green-agent:latest"
+env = { OPENROUTER_API_KEY = "${OPENROUTER_API_KEY}", NEBIUS_API_KEY = "${NEBIUS_API_KEY}", LOG_LEVEL = "DEBUG", FHIR_SERVER_URL = "http://fhir-server:8080", AGENTBEATS_ENABLE_TRACING = "true" }
+
+[[participants]]
+agentbeats_id = "019bbe64-089b-7e12-b003-61c1ffb61999"
+#image = "ghcr.io/udapy/medagentbench-purple-agent:latest"
+name = "purple_agent"
+env = { OPENROUTER_API_KEY = "${OPENROUTER_API_KEY}", OPENROUTER_MODEL_NAME = "deepseek/deepseek-v3.2", NEBIUS_API_KEY = "${NEBIUS_API_KEY}", NEBIUS_MODEL_NAME = "deepseek-ai/DeepSeek-R1-0528", FHIR_SERVER_URL = "http://fhir-server:8080", LOG_LEVEL = "DEBUG", AGENTBEATS_ENABLE_TRACING = "true"}
+
+[config]
+# MedAgentBench Task configuration
+task_ids = [
+    "task1_1", "task1_2", "task1_3", "task1_4", "task1_5"]
+max_iterations = 10
