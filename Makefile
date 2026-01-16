@@ -10,6 +10,8 @@ generate:
 	$(VENV_BIN) generate_compose.py --scenario scenario.toml
 
 run: generate
+	mkdir -p output
+	chmod 777 output 2>/dev/null || true
 	docker compose up --build --abort-on-container-exit --exit-code-from agentbeats-client
 
 clean:
