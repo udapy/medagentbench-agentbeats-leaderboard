@@ -62,11 +62,6 @@ services:
     image: {green_image}
     platform: linux/amd64
     container_name: green-agent
-    volumes:
-      - ./.patches/green_messenger.py:/app/src/messenger.py
-      - ./.patches/green_core.py:/app/src/green_agent/core.py
-      - ./.patches/green_executor.py:/app/src/a2a_adapter/green_executor.py
-      - ./.patches/green_server.py:/app/src/a2a_adapter/server.py
     entrypoint: ["/bin/sh", "-c"]
     command:
       - |
