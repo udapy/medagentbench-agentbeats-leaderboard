@@ -14,4 +14,4 @@ env = { OPENROUTER_API_KEY = "${OPENROUTER_API_KEY}", OPENROUTER_MODEL_NAME = "d
 task_ids = [
     "task1_4", "task1_20"
 ]
-max_iterations = 3
+max_iterations = 4
